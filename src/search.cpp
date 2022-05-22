@@ -149,7 +149,7 @@ int Search::absearch(int depth, int alpha, int beta, int player, int ply, bool n
     int oldAlpha = alpha;
     bool RootNode = ply == 0;
 
-    if (ply >= 1 && board.isRepetition()) return 0;
+    if (ply >= 1 && board.isRepetition()) return (0 + (2 * (nodes & 1) - 1));;
     if (!RootNode){
         if (board.halfMoveClock >= 100) return 0;
         int all = popcount(board.All());
