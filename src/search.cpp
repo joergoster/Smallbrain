@@ -343,13 +343,17 @@ int Search::aspiration_search(int depth, int prev_eval) {
         beta = prev_eval + 100;
         result = absearch(depth, alpha, beta, ply, false);
     }
+    int alphaResize = 0;
+    int betaResize = 0;
     // In case the result is outside the bounds we have to do a research
     while (result <= alpha) {
-        alpha -= 50;
+        alpha -= 50 * alphaResize;
+        alphaResize++;
         result = absearch(depth, alpha, beta, ply, false);
     }
     while (result >= beta) {
-        beta += 50;
+        beta += 50 * betaResize;
+        betaResize++;
         result = absearch(depth, alpha, beta, ply, false);
     }
     return result;
