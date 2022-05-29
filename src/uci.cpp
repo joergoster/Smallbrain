@@ -27,8 +27,10 @@ int main(int argc, char** argv) {
         std::cout << "Error: Could not allocate memory for TT\n";
         exit(1);
     }
-    for (int i = 0; i < 256; i++){
-        reductions[i] = log(i) + 1;
+    for (int i = 0; i < 120; i++){
+        for (int j = 0; j < 256; j++){
+            reductions[i][j] = 0.75 + log(i) * log(j) / 2.25;
+        } 
     }
     while (true) {
         if (argc > 1) {

@@ -1,6 +1,26 @@
 #include "search.h"
 #include "evaluation.h"
 
+U64 Search::perft(int depth, int max) {
+    Movelist ml = board.legalmoves();
+    if (depth == 1) {
+        return ml.size;
+    }
+    U64 nodesIt = 0;
+    for (int i = 0; i < ml.size; i++) {
+        Move move = ml.list[i];
+        board.makeMove(move);
+        nodesIt += perft(depth - 1, depth);
+        board.unmakeMove(move);
+        if (depth == max) {
+            nodes += nodesIt;
+            std::cout << board.printMove(move) << " " << nodesIt << std::endl;
+            nodesIt = 0;
+        }
+    }
+    return nodesIt;
+}
+
 void Search::perf_Test(int depth, int max) {
     auto t1 = std::chrono::high_resolution_clock::now();
     perft(depth, max);
@@ -75,26 +95,6 @@ void Search::testAllPos() {
     std::cout << "Nodes searched     : " << total << std::endl;
     std::cout << "Nodes/second       : " << (total / (ms + 1)) * 1000 << std::endl;
     std::cout << "Correct Positions  : " << passed << "/" << "6" << std::endl;
-}
-
-U64 Search::perft(int depth, int max) {
-    Movelist ml = board.legalmoves();
-    if (depth == 1) {
-        return ml.size;
-    }
-    U64 nodesIt = 0;
-    for (int i = 0; i < ml.size; i++) {
-        Move move = ml.list[i];
-        board.makeMove(move);
-        nodesIt += perft(depth - 1, depth);
-        board.unmakeMove(move);
-        if (depth == max) {
-            nodes += nodesIt;
-            std::cout << board.printMove(move) << " " << nodesIt << std::endl;
-            nodesIt = 0;
-        }
-    }
-    return nodesIt;
 }
 
 int Search::qsearch(int depth, int alpha, int beta, int ply) {
@@ -262,7 +262,7 @@ int Search::absearch(int depth, int alpha, int beta, int ply, bool null) {
 
         // late move reduction
         if (depth >= 3 && !inCheck && madeMoves > 3 + 2 * PvNode) {
-            int rdepth = reductions[madeMoves];
+            int rdepth = reductions[depth][madeMoves];
             rdepth = std::clamp(depth - 1 - rdepth, 1, depth - 2);
 
             // Decrease reduction for pvnodes
