@@ -312,7 +312,7 @@ int Search::absearch(int depth, int alpha, int beta, int ply, bool null) {
                 
                 if (score >= beta) {
                     // update Killer Moves
-                    if (!capture) {
+                    if (!capture && !(killerMoves[0][ply] == move)) {
                         killerMoves[1][ply] = killerMoves[0][ply];
                         killerMoves[0][ply] = move;
                     }
