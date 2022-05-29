@@ -253,9 +253,9 @@ int Search::absearch(int depth, int alpha, int beta, int ply, bool null) {
 
         // late move pruning/movecount pruning
         if (!PvNode && !capture && !inCheck && !givesCheck && !move.promoted
-            && quietMoves > lmpM[depth]) {
+            && quietMoves > (3 + (depth + 1) * depth)) {
             board.unmakeMove(move);
-            continue;
+            break;
         }
 
         // late move reduction
