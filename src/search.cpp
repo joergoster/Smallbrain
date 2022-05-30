@@ -382,7 +382,12 @@ int Search::iterative_deepening(int search_depth, Time time) {
 
     memset(spentEffort, 0, sizeof(spentEffort[0][0]) * 64 * 64);
     for (int depth = 1; depth <= search_depth; depth++) {
+        if (elapsed() > searchTime * 0.9)
+            goto skip;
+
         result = aspiration_search(depth, result);
+        
+        skip:
         // Can we exit the search early
         // if so use the previous best move
         if (exit_early()) {
