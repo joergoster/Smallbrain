@@ -375,6 +375,7 @@ int Search::iterative_deepening(int search_depth, Time time) {
 
     int result = 0;
     Move prev_bestmove{};
+    int prev_eval = 0;
     int startNodes = nodes;
     bool adjustedTime = false;
     Move reduceTimeMove = nullmove;
@@ -398,8 +399,13 @@ int Search::iterative_deepening(int search_depth, Time time) {
             searchTime = std::min((int64_t)50, searchTime);
         } 
 
-        // Update the previous best move and print information
+        if (result - 200 > prev_eval || result + 200 < prev_eval) {
+            searchTime *= 1.05f;
+        }
+
+        // Update the previous best move
         prev_bestmove = pv_table[0][0];
+        prev_eval = result;
 
         // reduce the time if we spent a lot of effort searching that move
         // effort goes from 0 to 100
