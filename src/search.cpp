@@ -420,7 +420,7 @@ int Search::iterative_deepening(int search_depth, Time time) {
             searchTime = startTime * 1.05f;
             adjustedTime = false;
         }
-        else if (bestMoveChanges > 5 && !adjustedTime) {
+        else if (bestMoveChanges > 7 && !adjustedTime) {
             adjustedTime = true;
             searchTime *= 1.05;
         }
