@@ -341,14 +341,14 @@ int Search::aspiration_search(int depth, int prev_eval) {
     int ply = 0;
 
     if (depth > 5) {
-        alpha = std::max(prev_eval - delta, -((int)VALUE_INFINITE));
-        beta = std::min(prev_eval + delta, (int)VALUE_INFINITE);
+        alpha = std::max(prev_eval - 50, -((int)VALUE_INFINITE));
+        beta = std::min(prev_eval + 50, (int)VALUE_INFINITE);
     }
 
     while (true) {
         if (alpha < -3500) alpha = -VALUE_INFINITE;
         if (beta  >  3500) beta  =  VALUE_INFINITE;
-        result = absearch(depth, -VALUE_INFINITE, VALUE_INFINITE, ply, false);
+        result = absearch(depth, alpha, beta, ply, false);
         if (result <= alpha) {
             alpha = std::max(alpha - delta, -((int)VALUE_INFINITE));
             beta = (alpha + 3 * beta) / 2;
