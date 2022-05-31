@@ -359,7 +359,7 @@ int Search::aspiration_search(int depth, int prev_eval) {
     return result;
 }
 
-int Search::iterative_deepening(int search_depth, Time time) {
+int Search::iterative_deepening(int searchDepth, Time time, int threadId, int threadCount) {
     // reuse previous pv information
    if (pv_length[0] > 0) {
         for (int i = 1; i < pv_length[0]; i++) {
@@ -373,6 +373,13 @@ int Search::iterative_deepening(int search_depth, Time time) {
     searchTime = time.optimum;
     maxTime = time.maximum;
 
+    if (threadId == 0){
+        for (int n = 0; n < threadCount; n++) {
+            this->runningThreads.emplace_back(&Search::iterative_deepening, this, searchDepth, time, n + 1, threadCount);
+        }
+    }
+
+
     int result = 0;
     Move prev_bestmove{};
     int startNodes = nodes;
@@ -381,7 +388,7 @@ int Search::iterative_deepening(int search_depth, Time time) {
     int64_t startTime = searchTime;
 
     memset(spentEffort, 0, sizeof(spentEffort[0][0]) * 64 * 64);
-    for (int depth = 1; depth <= search_depth; depth++) {
+    for (int depth = 1; depth <= searchDepth; depth++) {
         result = aspiration_search(depth, result);
         // Can we exit the search early
         // if so use the previous best move

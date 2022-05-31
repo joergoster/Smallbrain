@@ -32,6 +32,7 @@ public:
     Stack ss[MAX_PLY+1]{};
     U64 spentEffort[64][64]{};
     int rootSize{};
+    std::vector<std::thread> runningThreads;
     std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
     Search(Board brd) {
@@ -44,7 +45,7 @@ public:
     int qsearch(int depth, int alpha, int beta, int ply);
     int absearch(int depth, int alpha, int beta, int ply, bool null);
     int aspiration_search(int depth, int prev_eval);
-    int iterative_deepening(int depth, Time time);
+    int iterative_deepening(int depth, Time time, int threadId, int threadCount);
     bool exit_early();
     int mmlva(Move& move);
     int score_move(Move& move, int ply, bool ttMove);

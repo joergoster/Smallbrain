@@ -21,6 +21,7 @@ Search searcher_class = Search(board);
 int main(int argc, char** argv) {
     searcher_class.board.applyFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     stopped = false;
+    int threadCount = 0;
     signal(SIGINT, signal_callback_handler);
     TEntry* oldbuffer;
     if ((TTable = (TEntry*)malloc(TT_SIZE * sizeof(TEntry))) == NULL) {
@@ -75,6 +76,11 @@ int main(int argc, char** argv) {
                 exit(1);
             }
             TT_SIZE = elements;
+        }
+        if (input.find("setoption name Threads value") != std::string::npos) {
+            std::size_t start_index = input.find("value");
+            std::string size_str = input.substr(start_index + 6);
+            threadCount = std::stoi(size_str);
         }
         if (input == "moves") {
             Movelist ml = searcher_class.board.legalmoves();
@@ -133,7 +139,7 @@ int main(int argc, char** argv) {
             Time t;
             t.optimum = 0;
             t.maximum = 0;
-            thread.begin(depth, t);
+            thread.begin(depth, t, threadCount);
         }
         if (input.find("go infinite") != std::string::npos) {
             thread.stop();
@@ -142,7 +148,7 @@ int main(int argc, char** argv) {
             Time t;
             t.optimum = 0;
             t.maximum = 0;
-            thread.begin(depth, t);
+            thread.begin(depth, t, threadCount);
         }
         if (input.find("wtime") != std::string::npos) {
             thread.stop();
@@ -168,7 +174,7 @@ int main(int argc, char** argv) {
             }
 
             Time t = optimumTime(timegiven, inc, searcher_class.board.fullMoveNumber, mtg);
-            thread.begin(depth, t);
+            thread.begin(depth, t, threadCount);
         }
         if (input.find("setoption") != std::string::npos) {
             std::vector<std::string> tokens = split_input(input);
